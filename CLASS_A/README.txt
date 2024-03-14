@@ -1,1 +1,1 @@
-여기는 A반 입니다.
+여기는 Hansung Git Project 입니다.
