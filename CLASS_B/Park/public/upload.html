@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>upload 입니다</title>
+
+    <script src="/__/firebase/8.6.5/firebase-app.js"></script>
+    <script src="/__/firebase/8.6.5/firebase-auth.js"></script>
+    <script src="/__/firebase/8.6.5/firebase-firestore.js"></script>
+    <script src="/__/firebase/8.6.5/firebase-storage.js"></script>
+  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+ 
+  <link href="main.css" rel="stylesheet">
+ 
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyBGQvBjdZf8mSpZzOkcuyg4bgbVVmQniIM",
+        authDomain: "hansung-b-f9948.firebaseapp.com",
+        projectId: "hansung-b-f9948",
+        storageBucket: "hansung-b-f9948.appspot.com",
+        messagingSenderId: "424317154739",
+        appId: "1:424317154739:web:0702744954d1e723a007c6"
+      };
+    
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="upload.html">Upload</a>
+        <a class="nav-link" href="Join.html">Join</a>
+        <a class="nav-link" href="login.html">Login</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<div class="container mt-3">
+  <input type="text" class="form-control mt-2" id="title" placeholder="title">
+  <textarea class="form-control mt-2" id="content">Content</textarea>
+  <input type="text" class="form-control mt-2" id="price" placeholder="price">
+  <input class="form-control mt-2" type="file" id="image">
+  <button class="btn btn-danger mt-3" id="send">올리기</button>
+</div>
+
+<!-- Firestore 공간-->
+    <script>
+      const db = firebase.firestore()
+      const storage = firebase.storage()
+
+      $('#send').click(function() {
+        // 파일 선택으로 가져온 파일 / [0]은 첫번째만 가져온다
+        var file = document.querySelector('#image').files[0]
+        // storage를 사용하려면 (파이어베이스 문법인)ref를 가져야 한다.
+        var storageRef = storage.ref()
+        // image/파이이름 의 경로로 저장할거다
+        var 저장할경로 = storageRef.child('image/' + file.name)
+        // 실제로 put함수로 file을 storage에 업로드한다
+        var 업로드작업 = 저장할경로.put(file)  
+        console.log("업로드 시작")
+
+        업로드작업.on('state_change',
+          null, // 변화시 동작 ex.Progress
+          (error) => {
+            alert("에러")
+          },
+          () => {
+            // db 문서 만들기
+            업로드작업.snapshot.ref.getDownloadURL().then((url) => {
+              var 저장할거 = {
+                이름 : $('#title').val(),
+                가격 : $('#price').val(),
+                내용 : $('#content').val(),
+                이미지 : url
+              }
+
+              // 실제 db에 업로드
+              db.collection('market').add(저장할거)
+            })
+          }
+        )
+
+
+      })
+    </script>
+
+  </body>
+</html>
