@@ -82,6 +82,8 @@
                         console.log(doc.data().uid)
                         if(doc.data().uid==성공.user.uid){
                             alert("로그인 성공="+doc.data().uid)
+
+                            window.location.href = "index.html";
                         }
                     })
                 })
