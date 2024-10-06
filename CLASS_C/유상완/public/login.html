@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>로그인</title>
+
+  <script src="/__/firebase/8.6.5/firebase-app.js"></script>
+  <script src="/__/firebase/8.6.5/firebase-auth.js"></script>
+  <script src="/__/firebase/8.6.5/firebase-firestore.js"></script>
+  <script src="/__/firebase/8.6.5/firebase-storage.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="main.css" rel="stylesheet">
+</head>
+
+<body>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6wbimh2-7JaBxdpS_nMtngkjQ7y_q1Xg",
+      authDomain: "hansung-c-dfb33.firebaseapp.com",
+      projectId: "hansung-c-dfb33",
+      storageBucket: "hansung-c-dfb33.appspot.com",
+      messagingSenderId: "575615058827",
+      appId: "1:575615058827:web:66cfe7a0075105f617a58e"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link" href="index.html">Home</a>
+          <a class="nav-link" href="upload.html">업로드</a>
+          <a class="nav-link" href="join.html">회원가입</a>
+          <a class="nav-link" href="login.html">로그인</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-3">
+    <div class="mb-3">
+      <input type="email" class="form-control" placeholder="email" id="email-new">
+    </div>
+    <div class="mb-3">
+      <input type="password" class="form-control" placeholder="pw" id="pw-new">
+    </div>
+    <button type="submit" class="btn btn-primary" id="btn_login">로그인</button>
+  </div>
+  <script>
+    const db = firebase.firestore()
+
+    $('#btn_login').click(function(){
+      var 이메일 = $('#email-new').val()
+      var 비밀번호 = $('#pw-new').val()
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(이메일, 비밀번호)
+        .then((result)=>{
+          console.log("성공 uid = "+result.user.uid)
+          db.collection('member').get().then((db_result)=>{
+            db_result.forEach(doc=>{
+              console.log("email = " + doc.data().email)
+              console.log("uid = " + doc.data().uid)
+
+              if(result.user.uid == doc.data().uid){
+                alert(doc.data().name + " 님 환영합니다!")
+              }
+            })
+          })
+        })
+        .catch((err)=>{
+          console.log("실패 이메일 = " + 이메일)
+        })
+
+    })
+
+  </script>
+
+
+</body>
+
+</html>
